@@ -35,9 +35,23 @@ describe('backend express testing', () => {
 
   //test 1 show list of restaurants
   it('GET list of all restaurants', async () => {
-    const res = await request(app).get('/api/v1/restaurants')
+    const res = await request(app).get('/api/v1/restaurants');
     expect(res.body.length).toEqual(4);
-  })
+  });
+
+  //test 2 show list of restaurant by id
+  it('GET specific restaurant by id', async () => {
+    const res = await request(app).get('/api/v1/restaurants/2');
+    const test = {
+      id: '2',
+      name: 'Mucca Osteria',
+      cuisine: 'Italian',
+      cost: 3,
+      image: 'https://media-cdn.tripadvisor.com/media/photo-m/1280/13/af/df/89/duck.jpg',
+      website: 'http://www.muccaosteria.com'
+    };
+    expect(res.body).toEqual(test);
+  });
 
   afterAll(() => {
     pool.end();
