@@ -41,14 +41,28 @@ describe('backend express testing', () => {
 
   //test 2 show list of restaurant by id
   it('GET specific restaurant by id', async () => {
-    const res = await request(app).get('/api/v1/restaurants/2');
+    const res = await request(app).get('/api/v1/restaurants/1');
     const test = {
-      id: '2',
-      name: 'Mucca Osteria',
-      cuisine: 'Italian',
-      cost: 3,
-      image: 'https://media-cdn.tripadvisor.com/media/photo-m/1280/13/af/df/89/duck.jpg',
-      website: 'http://www.muccaosteria.com'
+      id: '1',
+      name: 'Pip\'s Original',
+      cuisine: 'American',
+      cost: 1,
+      image: 'https://media-cdn.tripadvisor.com/media/photo-o/05/dd/53/67/an-assortment-of-donuts.jpg',
+      website: 'http://www.PipsOriginal.com',
+    };
+    expect(res.body).toEqual(test);
+  });
+
+  //test 3 show list of restaurant by id
+  it('GET specific restaurant by id WITH NESTED COMMENTS', async () => {
+    const res = await request(app).get('/api/v1/restaurants/1');
+    const test = {
+      id: '1',
+      name: 'Pip\'s Original',
+      cuisine: 'American',
+      cost: 1,
+      image: 'https://media-cdn.tripadvisor.com/media/photo-o/05/dd/53/67/an-assortment-of-donuts.jpg',
+      website: 'http://www.PipsOriginal.com',
     };
     expect(res.body).toEqual(test);
   });
