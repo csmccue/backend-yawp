@@ -39,32 +39,43 @@ describe('backend express testing', () => {
     expect(res.body.length).toEqual(4);
   });
 
-  //test 2 show list of restaurant by id
+  //test 2 show list of restaurant by id with nested reviews
   it('GET specific restaurant by id', async () => {
     const res = await request(app).get('/api/v1/restaurants/1');
-    const test = {
-      id: '1',
-      name: 'Pip\'s Original',
-      cuisine: 'American',
-      cost: 1,
-      image: 'https://media-cdn.tripadvisor.com/media/photo-o/05/dd/53/67/an-assortment-of-donuts.jpg',
-      website: 'http://www.PipsOriginal.com',
-    };
-    expect(res.body).toEqual(test);
-  });
-
-  //test 3 show list of restaurant by id
-  it('GET specific restaurant by id WITH NESTED COMMENTS', async () => {
-    const res = await request(app).get('/api/v1/restaurants/1');
-    const test = {
-      id: '1',
-      name: 'Pip\'s Original',
-      cuisine: 'American',
-      cost: 1,
-      image: 'https://media-cdn.tripadvisor.com/media/photo-o/05/dd/53/67/an-assortment-of-donuts.jpg',
-      website: 'http://www.PipsOriginal.com',
-    };
-    expect(res.body).toEqual(test);
+    // expect(res.body).toEqual(test);
+    expect(res.body).toMatchInlineSnapshot(`
+      Object {
+        "cost": 1,
+        "cuisine": "American",
+        "id": "1",
+        "image": "https://media-cdn.tripadvisor.com/media/photo-o/05/dd/53/67/an-assortment-of-donuts.jpg",
+        "name": "Pip's Original",
+        "reviews": Array [
+          Object {
+            "detail": "Best restaurant ever!",
+            "id": "1",
+            "restaurant_id": "1",
+            "stars": 5,
+            "user_id": "1",
+          },
+          Object {
+            "detail": "Terrible service :(",
+            "id": "2",
+            "restaurant_id": "1",
+            "stars": 1,
+            "user_id": "2",
+          },
+          Object {
+            "detail": "It was fine.",
+            "id": "3",
+            "restaurant_id": "1",
+            "stars": 4,
+            "user_id": "3",
+          },
+        ],
+        "website": "http://www.PipsOriginal.com",
+      }
+    `);
   });
 
   afterAll(() => {
