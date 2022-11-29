@@ -4,29 +4,29 @@ const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
 
-// // Dummy user for testing
-// const mockUser = {
-//   firstName: 'Test',
-//   lastName: 'User',
-//   email: 'test@example.com',
-//   password: '12345',
-// };
+// Dummy user for testing
+const mockUser = {
+  firstName: 'Test',
+  lastName: 'User',
+  email: 'test@example.com',
+  password: '12345',
+};
 
-// const registerAndLogin = async (userProps = {}) => {
-//   const password = userProps.password ?? mockUser.password;
+const registerAndLogin = async (userProps = {}) => {
+  const password = userProps.password ?? mockUser.password;
 
-//   // Create an "agent" that gives us the ability
-//   // to store cookies between requests in a test
-//   const agent = request.agent(app);
+  // Create an "agent" that gives us the ability
+  // to store cookies between requests in a test
+  const agent = request.agent(app);
 
-//   // Create a user to sign in with
-//   const user = await UserService.create({ ...mockUser, ...userProps });
+  // Create a user to sign in with
+  const user = await UserService.create({ ...mockUser, ...userProps });
 
-//   // ...then sign in
-//   const { email } = user;
-//   await agent.post('/api/v1/users/sessions').send({ email, password });
-//   return [agent, user];
-// };
+  // ...then sign in
+  const { email } = user;
+  await agent.post('/api/v1/users/sessions').send({ email, password });
+  return [agent, user];
+};
 
 describe('backend express testing', () => {
   beforeEach(() => {
@@ -42,7 +42,6 @@ describe('backend express testing', () => {
   //test 2 show list of restaurant by id with nested reviews
   it('GET specific restaurant by id', async () => {
     const res = await request(app).get('/api/v1/restaurants/1');
-    // expect(res.body).toEqual(test);
     expect(res.body).toMatchInlineSnapshot(`
       Object {
         "cost": 1,
@@ -76,6 +75,19 @@ describe('backend express testing', () => {
         "website": "http://www.PipsOriginal.com",
       }
     `);
+  });
+
+  //test 3 creates new review
+  it('POST create new review', async () => {
+    const newReview = {
+      id: '5',
+      user_id: '3',
+      restaurant_id: 3,
+      stars: 2,
+      detail: 'pretty trash'
+    };
+    const res = await request(app).post('/api/v1/restaurants/:id/reviews').send(newReview);
+    expect(res.status).toBe(200);
   });
 
   afterAll(() => {
