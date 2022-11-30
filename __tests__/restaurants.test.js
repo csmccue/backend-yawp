@@ -4,7 +4,6 @@ const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
 
-// Dummy user for testing
 const mockUser = {
   firstName: 'Test',
   lastName: 'User',
@@ -14,15 +13,8 @@ const mockUser = {
 
 const registerAndLogin = async (userProps = {}) => {
   const password = userProps.password ?? mockUser.password;
-
-  // Create an "agent" that gives us the ability
-  // to store cookies between requests in a test
   const agent = request.agent(app);
-
-  // Create a user to sign in with
   const user = await UserService.create({ ...mockUser, ...userProps });
-
-  // ...then sign in
   const { email } = user;
   await agent.post('/api/v1/users/sessions').send({ email, password });
   return [agent, user];
@@ -79,15 +71,26 @@ describe('backend express testing', () => {
 
   //test 3 creates new review
   it('POST create new review', async () => {
+    const [agent, user] = await registerAndLogin();
+    console.log(user.id);
     const newReview = {
-      id: '5',
-      user_id: '3',
       restaurant_id: 3,
+      user_id: user.id,
       stars: 2,
-      detail: 'pretty trash'
+      detail: 'pretty trash',
     };
-    const res = await request(app).post('/api/v1/restaurants/:id/reviews').send(newReview);
-    expect(res.status).toBe(200);
+    const res = await agent
+      .post('/api/v1/restaurants/3/reviews')
+      .send(newReview);
+    expect(res.body).toMatchInlineSnapshot(`
+      Object {
+        "detail": "pretty trash",
+        "id": "4",
+        "restaurant_id": "3",
+        "stars": 2,
+        "user_id": "4",
+      }
+    `);
   });
 
   afterAll(() => {
