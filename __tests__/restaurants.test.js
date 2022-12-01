@@ -72,7 +72,7 @@ describe('backend express testing', () => {
   //test 3 creates new review
   it('POST create new review', async () => {
     const [agent, user] = await registerAndLogin();
-    console.log(user.id);
+    // console.log(user.id);
     const newReview = {
       restaurant_id: 3,
       user_id: user.id,
